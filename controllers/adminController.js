@@ -44,14 +44,15 @@ const loginController = async (req, res) => {
             return res.status(201).send({ message: "Admin Credentials is incorrect...!", success: false });
         }
 
+        //Pass data to client....
         const adminID = await user._id;
-
+        const adminNAME = await user.adminName;
         //Token generation....
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: "1d",
         });
 
-        res.status(202).send({ message: "Admin login successfully...", success: true, token, data: adminID });
+        res.status(202).send({ message: "Admin login successfully...", success: true, token, data: { adminID, adminNAME } });
     } catch (err) {
         console.log(err);
         res.status(500).send({ message: "Admin failed to login...", success: false });
