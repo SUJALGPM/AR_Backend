@@ -1,6 +1,7 @@
 const adminModel = require('../models/adminModel');
 const doctorModel = require("../models/doctorModel");
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 //Admin register controller....
 const registerController = async (req, res) => {
@@ -45,7 +46,12 @@ const loginController = async (req, res) => {
 
         const adminID = await user._id;
 
-        res.status(202).send({ message: "Admin login successfully...", success: true, data: adminID });
+        //Token generation....
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "1d",
+        });
+
+        res.status(202).send({ message: "Admin login successfully...", success: true, token, data: adminID });
     } catch (err) {
         console.log(err);
         res.status(500).send({ message: "Admin failed to login...", success: false });
