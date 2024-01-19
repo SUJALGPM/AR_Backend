@@ -1,5 +1,33 @@
 const mongoose = require('mongoose');
 
+//Doctor Usage track...
+const CategorySchema = new mongoose.Schema({
+    categoryName: String,
+    filterName: String,
+    filterUrl: String,
+    doc: Date
+});
+
+//Doctor Schema...
+const doctorSchema = new mongoose.Schema({
+    doctorName: String,
+    scCode: {
+        type: String,
+        unique: true
+    },
+    city: String,
+    state: String,
+    locality: String,
+    speciality: String,
+    doc: Date,
+    categories: {
+        type: [CategorySchema],
+        default: [],
+    },
+    doctorList: { type: mongoose.Schema.Types.ObjectId, ref: 'MRUser' }
+}, { timestamps: true });
+
+//MR Schema....
 const userSchema = new mongoose.Schema({
     adminId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -41,9 +69,14 @@ const userSchema = new mongoose.Schema({
     HQ: {
         type: String,
         required: true
-    }
+    },
+    doctorList: {
+        type: [doctorSchema],
+        default: []
+    },
 }, { timestamps: true });
 
 const MR = mongoose.model('MRUser', userSchema);
+const DoctorModel = mongoose.model("Doctors", doctorSchema);
 
-module.exports = MR;
+module.exports = { MR, DoctorModel };

@@ -1,4 +1,3 @@
-const doctorModel = require("../models/doctorModel");
 const mrModel = require("../models/mrModel");
 
 //Create Doctor controller....
@@ -6,19 +5,20 @@ const createDoctor = async (req, res) => {
     try {
         const mrID = req.params.id;
 
-        const mrExist = await mrModel.findById(mrID);
+        const mrExist = await mrModel.MR.findById(mrID).populate('doctorList');
 
         if (!mrExist) {
             return res.status(201).send({ message: "MR is not found..!", success: false });
         }
 
         const newDataMR = { mrReference: mrID, ...req.body };
-        const doctor = new doctorModel(newDataMR);
+        const doctor = new mrModel.DoctorModel(newDataMR);
         const createDoctor = await doctor.save();
 
-        if (createDoctor) {
-            return res.status(201).send({ message: "New Doctor is created successfully...", success: true });
-        }
+        mrExist.doctorList.push(createDoctor);
+        await mrExist.save();
+
+        return res.status(201).send({ message: "New Doctor is created successfully...", success: true });
 
     } catch (err) {
         console.log(err);

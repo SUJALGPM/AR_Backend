@@ -15,7 +15,7 @@ const registerController = async (req, res) => {
             return res.status(201).send({ message: "Admin not found..!", success: false });
         }
 
-        const mrExist = await mrModel.findOne({ MRId: req.body.MRId });
+        const mrExist = await mrModel.MR.findOne({ MRId: req.body.MRId });
         if (mrExist) {
             return res.status(201).send({ message: "MR Already Exist...!", success: false });
         }
@@ -25,7 +25,7 @@ const registerController = async (req, res) => {
         // const hashedPassword = await bcrypt.hash(password, salt);
         // req.body.password = hashedPassword;
         const newData = { adminId: adminIdRef, ...req.body };
-        const MR = new mrModel(newData);
+        const MR = new mrModel.MR(newData);
         const createMR = await MR.save();
 
         if (createMR) {
@@ -62,4 +62,19 @@ const loginController = async (req, res) => {
     }
 };
 
-module.exports = { registerController, loginController };
+//Get All MR data...
+const getMrDoctor = async (req, res) => {
+    try {
+        const mrData = await mrModel.MR.find({});
+
+        if (mrData) {
+            return res.status(201).send({ message: "All MR data fetch successfully...", success: true, data: mrData });
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: "Failed to fetch MR data...!", success: false });
+    }
+}
+
+module.exports = { registerController, loginController, getMrDoctor };

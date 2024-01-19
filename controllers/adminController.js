@@ -45,8 +45,10 @@ const loginController = async (req, res) => {
         }
 
         //Pass data to client....
+        console.log(user);
         const adminID = await user._id;
         const adminNAME = await user.adminName;
+
         //Token generation....
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: "1d",
