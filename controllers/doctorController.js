@@ -26,4 +26,13 @@ const createDoctor = async (req, res) => {
     }
 };
 
-module.exports = { createDoctor };
+//Get all doctor created by MR....
+const getAllDoctors = (req, res) => {
+    try {
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports = { createDoctor, getAllDoctors };
