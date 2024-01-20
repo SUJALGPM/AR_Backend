@@ -41,15 +41,22 @@ const doctorUsageController = async (req, res) => {
         const doctorID = req.params.id;
         const { categoryName, filterName } = req.body;
 
-        const doctorExist = await mrModel.DoctorModel.findById(doctorID).populate('categories');
+        const doctorExist = await mrModel.DoctorModel.findById(doctorID).populate({
+            path: 'categories',
+            populate: {
+                path: 'doctorList',
+                model: 'MRUser'
+            }
+        });
+
         if (!doctorExist) {
             return res.status(404).send({ message: "Doctors is not found..!", success: false });
         }
 
         if (!categoryName) {
-            return res.status(201).send({ message: "Category Name is not found..!", success: false });
+            return res.status(404).send({ message: "Category Name is not found..!", success: false });
         } else if (!filterName) {
-            return res.status(201).send({ message: "Filters Name is not found..!", success: false });
+            return res.status(404).send({ message: "Filters Name is not found..!", success: false });
         }
 
         //Store the usage in UsageModel...
@@ -58,11 +65,21 @@ const doctorUsageController = async (req, res) => {
 
         //Push to the doctor model...
         doctorExist.categories.push(newUsageEntry);
-        const pushDone = await doctorExist.save();
+        await doctorExist.save();
 
-        if (pushDone) {
-            return res.status(201).send({ message: "Usage Data successfully push to doctor model...", success: true });
+        // Push the newUsageEntry to the doctorList field in MR schema
+        const mrUser = await mrModel.MR.findOneAndUpdate(
+            { "doctorList._id": doctorExist._id },
+            { $push: { "doctorList.$.categories": newUsageEntry } },
+            { new: true }
+        );
+
+        if (!mrUser) {
+            return res.status(404).send({ message: "MR is not found...!", success: false });
         }
+
+        return res.status(201).send({ message: "Usage Data successfully push to doctor model...", success: true });
+
     } catch (err) {
         console.log(err);
         res.status(501).send({ message: "Failed to logged the Usage data...", success: false });
