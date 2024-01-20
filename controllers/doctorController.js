@@ -35,4 +35,38 @@ const getAllDoctors = (req, res) => {
     }
 }
 
-module.exports = { createDoctor, getAllDoctors };
+//Post api doctor usage of category & filters...
+const doctorUsageController = async (req, res) => {
+    try {
+        const doctorID = req.params.id;
+        const { categoryName, filterName } = req.body;
+
+        const doctorExist = await mrModel.DoctorModel.findById(doctorID).populate('categories');
+        if (!doctorExist) {
+            return res.status(404).send({ message: "Doctors is not found..!", success: false });
+        }
+
+        if (!categoryName) {
+            return res.status(201).send({ message: "Category Name is not found..!", success: false });
+        } else if (!filterName) {
+            return res.status(201).send({ message: "Filters Name is not found..!", success: false });
+        }
+
+        //Store the usage in UsageModel...
+        const newUsage = new mrModel.doctorUsage(req.body);
+        const newUsageEntry = await newUsage.save();
+
+        //Push to the doctor model...
+        doctorExist.categories.push(newUsageEntry);
+        const pushDone = await doctorExist.save();
+
+        if (pushDone) {
+            return res.status(201).send({ message: "Usage Data successfully push to doctor model...", success: true });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ message: "Failed to logged the Usage data...", success: false });
+    }
+}
+
+module.exports = { createDoctor, getAllDoctors, doctorUsageController };

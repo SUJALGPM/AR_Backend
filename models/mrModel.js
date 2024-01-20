@@ -4,9 +4,13 @@ const mongoose = require('mongoose');
 const CategorySchema = new mongoose.Schema({
     categoryName: String,
     filterName: String,
-    filterUrl: String,
-    doc: Date
+    doc: {
+        type: Date,
+        default: Date.now
+    },
+    categories: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctors' }
 });
+
 
 //Doctor Schema...
 const doctorSchema = new mongoose.Schema({
@@ -19,13 +23,17 @@ const doctorSchema = new mongoose.Schema({
     state: String,
     locality: String,
     speciality: String,
-    doc: Date,
+    doc: {
+        type: Date,
+        default: Date.now
+    },
     categories: {
         type: [CategorySchema],
         default: [],
     },
     doctorList: { type: mongoose.Schema.Types.ObjectId, ref: 'MRUser' }
 }, { timestamps: true });
+
 
 //MR Schema....
 const userSchema = new mongoose.Schema({
@@ -78,5 +86,6 @@ const userSchema = new mongoose.Schema({
 
 const MR = mongoose.model('MRUser', userSchema);
 const DoctorModel = mongoose.model("Doctors", doctorSchema);
+const doctorUsage = mongoose.model("doctorUsage", CategorySchema);
 
-module.exports = { MR, DoctorModel };
+module.exports = { MR, DoctorModel, doctorUsage };

@@ -40,7 +40,8 @@ const registerController = async (req, res) => {
 //MR Register controller...
 const loginController = async (req, res) => {
     try {
-        const user = await mrModel.MR.findOne({ MRId: req.body.MRId });
+        const user = await mrModel.MR.findById({ MRId: req.body.MRId });
+        const mrID = user._id;
 
         if (!user) {
             return res.status(201).send({ message: "MR not found...!", success: false });
@@ -55,7 +56,7 @@ const loginController = async (req, res) => {
             return res.status(201).send({ message: "Admin Credentials is incorrect...!", success: false });
         }
 
-        res.status(201).send({ message: "MR login successfully...", success: true });
+        res.status(201).send({ message: "MR login successfully...", success: true, data: mrID });
     } catch (err) {
         console.log(err);
         res.status(500).send({ message: "MR is failed to login...!", success: false });
@@ -67,9 +68,30 @@ const getMrDoctor = async (req, res) => {
     try {
         const mrData = await mrModel.MR.find({});
 
-        if (mrData) {
-            return res.status(201).send({ message: "All MR data fetch successfully...", success: true, data: mrData });
+        //Store report entry...
+        const reportEntries = [];
+
+        //Loop through each MR....
+        for (const mr of mrData) {
+            for (doctor of mr.doctorList) {
+                const DetailedEntryReport = {
+                    DIV: mr.DIV,
+                    STATE: mr.state,
+                    MRCODE: mr.MRId,
+                    MRNAME: mr.MRname,
+                    HQ: mr.HQ,
+                    DESG: mr.DESG,
+                    DRNAME: doctor.doctorName,
+                    DRSPECIALITY: doctor.speciality,
+                    DRCITY: doctor.city,
+                    DRSTATE: doctor.state,
+                    DRscCODE: doctor.scCode
+                }
+                reportEntries.push(DetailedEntryReport);
+            }
         }
+
+        res.status(201).send({ message: "All MR data fetch successfully...", success: true, data: reportEntries });
 
     } catch (err) {
         console.log(err);
