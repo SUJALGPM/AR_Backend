@@ -76,20 +76,24 @@ const getMrDoctor = async (req, res) => {
         //Loop through each MR....
         for (const mr of mrData) {
             for (doctor of mr.doctorList) {
-                const DetailedEntryReport = {
-                    DIV: mr.DIV,
-                    STATE: mr.state,
-                    MRCODE: mr.MRId,
-                    MRNAME: mr.MRname,
-                    HQ: mr.HQ,
-                    DESG: mr.DESG,
-                    DRNAME: doctor.doctorName,
-                    DRSPECIALITY: doctor.speciality,
-                    DRCITY: doctor.city,
-                    DRSTATE: doctor.state,
-                    DRscCODE: doctor.scCode
+                for (category of doctor.categories) {
+                    const DetailedEntryReport = {
+                        DIV: mr.DIV,
+                        STATE: mr.state,
+                        MRCODE: mr.MRId,
+                        MRNAME: mr.MRname,
+                        HQ: mr.HQ,
+                        DESG: mr.DESG,
+                        DRNAME: doctor.doctorName,
+                        DRSPECIALITY: doctor.speciality,
+                        DRCITY: doctor.city,
+                        DRSTATE: doctor.state,
+                        DRscCODE: doctor.scCode,
+                        DRcategoryUse: category.categoryName,
+                        DRfilterUse: category.filterName
+                    }
+                    reportEntries.push(DetailedEntryReport);
                 }
-                reportEntries.push(DetailedEntryReport);
             }
         }
 
