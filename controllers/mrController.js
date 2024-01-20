@@ -97,7 +97,7 @@ const getMrDoctor = async (req, res) => {
             }
         }
 
-        res.status(201).send({ message: "All MR data fetch successfully...", success: true, data: reportEntries });
+        res.status(201).json(reportEntries);
 
     } catch (err) {
         console.log(err);
