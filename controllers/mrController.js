@@ -40,7 +40,8 @@ const registerController = async (req, res) => {
 //MR Register controller...
 const loginController = async (req, res) => {
     try {
-        const user = await mrModel.MR.findById({ MRId: req.body.MRId });
+        const user = await mrModel.MR.findOne({ MRId: req.body.MRId });
+        console.log(user);
         const mrID = user._id;
 
         if (!user) {
