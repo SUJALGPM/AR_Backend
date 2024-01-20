@@ -40,7 +40,7 @@ const registerController = async (req, res) => {
 //MR Register controller...
 const loginController = async (req, res) => {
     try {
-        const user = await mrModel.findOne({ MRId: req.body.MRId });
+        const user = await mrModel.MR.findOne({ MRId: req.body.MRId });
 
         if (!user) {
             return res.status(201).send({ message: "MR not found...!", success: false });
