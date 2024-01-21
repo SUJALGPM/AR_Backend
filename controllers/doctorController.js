@@ -3,8 +3,9 @@ const mrModel = require("../models/mrModel");
 //Create Doctor controller....
 const createDoctor = async (req, res) => {
     try {
-        const mrID = req.params.id;
-
+        // const mrID = req.params.id;
+        const mrID = req.body.mrId;
+        console.log(mrID);
         const mrExist = await mrModel.MR.findById(mrID).populate('doctorList');
 
         if (!mrExist) {
@@ -109,5 +110,5 @@ const getAllDoctors = async (req, res) => {
     }
 }
 
-    
+
 module.exports = { createDoctor, getAllDoctors, doctorUsageController };
