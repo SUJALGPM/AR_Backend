@@ -105,4 +105,26 @@ const getMrDoctor = async (req, res) => {
     }
 }
 
-module.exports = { registerController, loginController, getMrDoctor };
+//GET only the MR ID & name to create doctor....
+const getMRId = async (req, res) => {
+    try {
+        const mrDetails = await mrModel.MR.find({});
+
+        //Empty array to store loop data...
+        const loopData = [];
+
+        for (mr of mrDetails) {
+            const detail = {
+                MRID: mr._id,
+                MRNAME: mr.MRname
+            }
+            loopData.push(detail);
+        }
+        res.status(201).json(loopData);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: "MR details not found..!!", success: false });
+    }
+}
+
+module.exports = { registerController, loginController, getMrDoctor, getMRId };

@@ -26,15 +26,6 @@ const createDoctor = async (req, res) => {
     }
 };
 
-//Get all doctor created by MR....
-const getAllDoctors = (req, res) => {
-    try {
-
-    } catch (err) {
-        console.log(err);
-    }
-}
-
 //Post api doctor usage of category & filters...
 const doctorUsageController = async (req, res) => {
     try {
@@ -86,4 +77,37 @@ const doctorUsageController = async (req, res) => {
     }
 }
 
+//Get all doctor created by MR....
+const getAllDoctors = async (req, res) => {
+    try {
+        const doctorList = await mrModel.DoctorModel.find({}).populate({
+            path: 'categories.categories',
+            model: 'Doctors'
+        });
+
+        //Empty array to store doctor List...
+        const doctorRetailList = [];
+
+        for (doc of doctorList) {
+            for (docCategory of doc.categories) {
+                const drLoopData = {
+                    DRNAME: doc.doctorName,
+                    DRscCode: doc.scCode,
+                    DRCITY: doc.scCode,
+                    DRLOCALITY: doc.scCode,
+                    DRSPECIALITY: doc.speciality,
+                    useDrCategory: docCategory.categoryName,
+                    useDrFilter: docCategory.filterName
+                }
+                doctorRetailList.push(drLoopData);
+            }
+        }
+
+        res.status(201).json(doctorRetailList);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+    
 module.exports = { createDoctor, getAllDoctors, doctorUsageController };

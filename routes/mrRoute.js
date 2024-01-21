@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerController, loginController, getMrDoctor } = require('../controllers/mrController');
+const { registerController, loginController, getMrDoctor, getMRId } = require('../controllers/mrController');
 
 //MR register controller....
 router.post("/register/:id", registerController);
@@ -10,5 +10,8 @@ router.post("/login", loginController);
 
 //Get All MR data...
 router.get("/getMrDoctor", getMrDoctor);
+
+//GET only the MR ID & name to create doctor....
+router.get("/getMrDetail", getMRId);
 
 module.exports = router;
