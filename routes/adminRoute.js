@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, } = require("../controllers/adminController");
+const { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, } = require("../controllers/adminController");
 
 //Multer configuration....
 const storage = multer.diskStorage({
@@ -33,6 +33,9 @@ router.get("/allFilters", allFilter);
 
 //Get all category with their filters....
 router.get("/allCategory", allgetCategory);
+
+//Get all filters for listout....
+router.get("/filterList", allfilterList);
 
 module.exports = router;
 

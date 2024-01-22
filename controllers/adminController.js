@@ -1,6 +1,7 @@
 const adminModel = require('../models/adminModel');
 const doctorModel = require("../models/doctorModel");
 const bcrypt = require('bcrypt');
+const mrModel = require('../models/mrModel');
 const jwt = require("jsonwebtoken");
 
 //Admin register controller....
@@ -246,5 +247,15 @@ const allgetCategory = async (req, res) => {
     }
 }
 
+//Get all filters for listout....
+const allfilterList = async (req, res) => {
+    try {
+        const ListFitler = await mrModel.doctorUsage.find({});
+        res.status(201).json(ListFitler);
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ message: 'Failed to fetch filter list...!!', success: false });
+    }
+}
 
-module.exports = { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory };
+module.exports = { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList };
