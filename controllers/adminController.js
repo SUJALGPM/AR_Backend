@@ -250,7 +250,7 @@ const allgetCategory = async (req, res) => {
 //Get all filters for listout....
 const allfilterList = async (req, res) => {
     try {
-        const ListFitler = await mrModel.doctorUsage.find({});
+        const ListFitler = await adminModel.Filter.find({});
         res.status(201).json(ListFitler);
     } catch (err) {
         console.log(err);
