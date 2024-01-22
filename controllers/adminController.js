@@ -215,16 +215,26 @@ const allgetCategory = async (req, res) => {
     try {
         const allCategory = await adminModel.CategoryType.find({});
 
-        //Empty array to store loop data...
+        // Empty array to store loop data...
         const getCategories = [];
 
-        //Now loop the category Model...
+        // Now loop the category Model...
         for (category of allCategory) {
-            for (catFilter of category.categoryType) {
+            if (category.categoryType && category.categoryType.length > 0) {
+                for (catFilter of category.categoryType) {
+                    const StoreCatData = {
+                        categoryName: category.categoryName,
+                        catFilterName: catFilter.filterName || '',
+                        catFilterImage: catFilter.filterUrl || '',
+                    }
+                    getCategories.push(StoreCatData);
+                }
+            } else {
+                // If categoryType is empty or not present, add an entry with empty strings
                 const StoreCatData = {
                     categoryName: category.categoryName,
-                    catFilterName: catFilter.filterName,
-                    catFilterImage: catFilter.filterUrl
+                    catFilterName: '',
+                    catFilterImage: '',
                 }
                 getCategories.push(StoreCatData);
             }
@@ -235,5 +245,6 @@ const allgetCategory = async (req, res) => {
         res.status(500).send({ message: "Failed to fetch all category data...", success: false });
     }
 }
+
 
 module.exports = { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory };
