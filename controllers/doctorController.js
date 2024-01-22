@@ -90,7 +90,21 @@ const getAllDoctors = async (req, res) => {
         const doctorRetailList = [];
 
         for (doc of doctorList) {
-            for (docCategory of doc.categories) {
+            if (doc.categories && doc.categories.length > 0) {
+                for (docCategory of doc.categories) {
+                    const drLoopData = {
+                        DRNAME: doc.doctorName,
+                        DRscCode: doc.scCode,
+                        DRCITY: doc.scCode,
+                        DRLOCALITY: doc.locality,
+                        DRSPECIALITY: doc.speciality,
+                        DRSTATE: doc.state,
+                        useDrCategory: docCategory.categoryName || '',
+                        useDrFilter: docCategory.filterName || '',
+                    }
+                    doctorRetailList.push(drLoopData);
+                }
+            } else {
                 const drLoopData = {
                     DRNAME: doc.doctorName,
                     DRscCode: doc.scCode,
@@ -98,8 +112,8 @@ const getAllDoctors = async (req, res) => {
                     DRLOCALITY: doc.locality,
                     DRSPECIALITY: doc.speciality,
                     DRSTATE: doc.state,
-                    useDrCategory: docCategory.categoryName,
-                    useDrFilter: docCategory.filterName
+                    useDrCategory: '',
+                    useDrFilter: '',
                 }
                 doctorRetailList.push(drLoopData);
             }
