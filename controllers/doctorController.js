@@ -5,7 +5,7 @@ const createDoctor = async (req, res) => {
     try {
         // const mrID = req.params.id;
         const mrID = req.body.mrId;
-        console.log(mrID);
+
         const mrExist = await mrModel.MR.findById(mrID).populate('doctorList');
 
         if (!mrExist) {
@@ -95,8 +95,9 @@ const getAllDoctors = async (req, res) => {
                     DRNAME: doc.doctorName,
                     DRscCode: doc.scCode,
                     DRCITY: doc.scCode,
-                    DRLOCALITY: doc.scCode,
+                    DRLOCALITY: doc.locality,
                     DRSPECIALITY: doc.speciality,
+                    DRSTATE: doc.state,
                     useDrCategory: docCategory.categoryName,
                     useDrFilter: docCategory.filterName
                 }

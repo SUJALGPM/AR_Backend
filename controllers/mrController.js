@@ -116,7 +116,7 @@ const getMRId = async (req, res) => {
         for (mr of mrDetails) {
             const detail = {
                 MRID: mr._id,
-                MRNAME: mr.MRname
+                MRUnique: mr.MRId,
             }
             loopData.push(detail);
         }
