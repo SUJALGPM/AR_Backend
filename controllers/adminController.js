@@ -65,7 +65,7 @@ const loginController = async (req, res) => {
 const addCategory = async (req, res) => {
     try {
         const adminId = req.params.id;
-        const { categoryName } = req.body;
+        const categoryName = req.body.categoryName;
 
         //Check category present or not...
         const categoryExist = await adminModel.CategoryType.findOne({ categoryName });
