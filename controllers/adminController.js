@@ -160,7 +160,7 @@ const addFilters = async (req, res) => {
     }
 };
 
-//Get the all category Type Name....
+//Get the all category Type Name Only....
 const getCategoryName = async (req, res) => {
     try {
         const allCategory = await adminModel.CategoryType.find({}, 'categoryName');
@@ -172,7 +172,7 @@ const getCategoryName = async (req, res) => {
             return res.status(201).send({ message: "Category Name is failed to fetch...", success: false });
         }
 
-        return res.status(201).send({ message: "All Category Name fetched successfully...", success: true, data: catName });
+        return res.status(201).json(catName);
 
     } catch (err) {
         console.log(err);
@@ -211,7 +211,7 @@ const allFilter = async (req, res) => {
     }
 }
 
-//Get all categeory with filter it consist...
+//Get all categeory with filter it consist for table...
 const allgetCategory = async (req, res) => {
     try {
         const allCategory = await adminModel.CategoryType.find({});
@@ -247,7 +247,7 @@ const allgetCategory = async (req, res) => {
     }
 }
 
-//Get all filters for listout....
+//Get all filters for listout for table....
 const allfilterList = async (req, res) => {
     try {
         const ListFitler = await adminModel.Filter.find({});
