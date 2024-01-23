@@ -110,8 +110,8 @@ const addCategory = async (req, res) => {
 //Add Filters by admin...
 const addFilters = async (req, res) => {
     try {
-        const categoryId = req.params.id;
-        const { filterName } = req.body;
+        // const categoryId = req.body.categoryId;
+        const { filterName, categoryId } = req.body;
         const filterUrl = req.file.filename;
 
         //Check Category Exist or not...
@@ -163,15 +163,20 @@ const addFilters = async (req, res) => {
 //Get the all category Type Name Only....
 const getCategoryName = async (req, res) => {
     try {
-        const allCategory = await adminModel.CategoryType.find({}, 'categoryName');
+        // Use lean() to convert mongoose document to plain JavaScript object
+        const allCategory = await adminModel.CategoryType.find({}, 'categoryName').lean();
 
         //Fetch only the categoryName...
-        const catName = allCategory.map(category => category.categoryName);
+        const catName = allCategory.map((category) => ({
+            catID: category._id,
+            catNAME: category.categoryName,
+        }));
 
         if (!catName) {
             return res.status(201).send({ message: "Category Name is failed to fetch...", success: false });
         }
 
+        //Sent the data as response...
         return res.status(201).json(catName);
 
     } catch (err) {

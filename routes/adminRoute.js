@@ -23,7 +23,7 @@ router.post("/login", loginController);
 router.post("/addCategory/:id", addCategory);
 
 //Add filters by admin...
-router.post("/addFilter/:id", upload.single('filterUrl'), addFilters);
+router.post("/addFilter", upload.single('filterUrl'), addFilters);
 
 //Get the all category Type Name....
 router.get("/getCategory", getCategoryName);
