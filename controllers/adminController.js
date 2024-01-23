@@ -109,7 +109,7 @@ const addCategory = async (req, res) => {
 
 //Add Filters by admin...
 const addFilters = async (req, res) => {
-    try {
+    try {   
         // const categoryId = req.body.categoryId;
         const { filterName, categoryId } = req.body;
         const filterUrl = req.file.filename;
@@ -160,7 +160,7 @@ const addFilters = async (req, res) => {
     }
 };
 
-//Get the all category Type Name Only....
+//Get the all category Type Name and ID Only....
 const getCategoryName = async (req, res) => {
     try {
         // Use lean() to convert mongoose document to plain JavaScript object

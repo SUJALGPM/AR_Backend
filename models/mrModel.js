@@ -44,7 +44,8 @@ const userSchema = new mongoose.Schema({
     },
     MRId: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
     },
     MRname: {
         type: String,

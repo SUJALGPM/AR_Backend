@@ -20,10 +20,6 @@ const registerController = async (req, res) => {
             return res.status(201).send({ message: "MR Already Exist...!", success: false });
         }
 
-        // const password = req.body.password;
-        // const salt = await bcrypt.genSalt(10);
-        // const hashedPassword = await bcrypt.hash(password, salt);
-        // req.body.password = hashedPassword;
         const newData = { adminId: adminIdRef, ...req.body };
         const MR = new mrModel.MR(newData);
         const createMR = await MR.save();
