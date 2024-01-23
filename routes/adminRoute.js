@@ -29,7 +29,7 @@ router.post("/addFilter/:id", upload.single('filterUrl'), addFilters);
 router.get("/getCategory", getCategoryName);
 
 //Get all filter to a particular category...
-router.get("/allFilters", allFilter);
+router.post("/allFilters", allFilter);
 
 //Get all category with their filters....
 router.get("/allCategory", allgetCategory);
