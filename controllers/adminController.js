@@ -12,10 +12,7 @@ const registerController = async (req, res) => {
         if (userExist) {
             return res.status(201).send({ message: "Admin is already exist", success: false });
         }
-        // const password = req.body.password;
-        // const salt = await bcrypt.genSalt(10);
-        // const hashedPassword = await bcrypt.hash(password, salt);
-        // req.body.password = hashedPassword;
+
         const admin = new adminModel.Admin(req.body);
         const adminRegister = await admin.save();
         if (adminRegister) {
@@ -109,7 +106,7 @@ const addCategory = async (req, res) => {
 
 //Add Filters by admin...
 const addFilters = async (req, res) => {
-    try {   
+    try {
         // const categoryId = req.body.categoryId;
         const { filterName, categoryId } = req.body;
         const filterUrl = req.file.filename;

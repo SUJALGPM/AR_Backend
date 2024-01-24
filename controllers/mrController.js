@@ -12,7 +12,7 @@ const registerController = async (req, res) => {
         const adminExist = await adminModel.Admin.findById(adminIdRef);
 
         if (!adminExist) {
-            return res.status(201).send({ message: "Admin not found..!", success: false });
+            return res.status(404).send({ message: "Admin not found..!", success: false });
         }
 
         const mrExist = await mrModel.MR.findOne({ MRId: req.body.MRId });
@@ -20,16 +20,22 @@ const registerController = async (req, res) => {
             return res.status(201).send({ message: "MR Already Exist...!", success: false });
         }
 
-        const newData = { adminId: adminIdRef, ...req.body };
-        const MR = new mrModel.MR(newData);
-        const createMR = await MR.save();
+        const newData = {
+            adminId: adminIdRef,
+            ...req.body
+        };
 
-        if (createMR) {
+        console.log("DATA ARAHA HAI : ", newData);
+
+        const MRcreate = new mrModel.MR(newData);
+        const newMr = await MRcreate.save();
+
+        if (newMr) {
             return res.status(201).send({ message: "MR register successfully...", success: true });
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send({ message: "MR failed to register...!", success: false });
+        res.status(500).send({ message: "MR failed to register...!", err });
     }
 };
 

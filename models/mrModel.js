@@ -11,7 +11,6 @@ const CategorySchema = new mongoose.Schema({
     categories: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctors' }
 });
 
-
 //Doctor Schema...
 const doctorSchema = new mongoose.Schema({
     doctorName: String,
@@ -44,7 +43,7 @@ const userSchema = new mongoose.Schema({
     },
     MRId: {
         type: String,
-        required: true,
+        required: true
     },
     MRname: {
         type: String,
