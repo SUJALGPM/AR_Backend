@@ -203,7 +203,7 @@ const allFilter = async (req, res) => {
         //Fetch only filterName & filterUrl...
         const filterField = fetchFilter.map(fetchData => ({
             filterName: fetchData.filterName,
-            filterUrl: fetchData.filterUrl,
+            filterUrl: `https://custom-iztj.onrender.com/${fetchData.filterUrl}`,
         }));
 
         res.status(201).send({ message: "Filter fetched successfully of selected category..", success: true, data: filterField });
