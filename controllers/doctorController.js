@@ -78,7 +78,7 @@ const doctorUsageController = async (req, res) => {
     }
 }
 
-//Get all doctor created by MR....
+//Get all doctor created by MR for table List....
 const getAllDoctors = async (req, res) => {
     try {
         const doctorList = await mrModel.DoctorModel.find({}).populate({

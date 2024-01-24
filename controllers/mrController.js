@@ -67,7 +67,7 @@ const loginController = async (req, res) => {
     }
 };
 
-//Get All MR data...
+//Get API FOR Detailed Report.....
 const getMrDoctor = async (req, res) => {
     try {
         const mrData = await mrModel.MR.find({});
@@ -78,7 +78,26 @@ const getMrDoctor = async (req, res) => {
         //Loop through each MR....
         for (const mr of mrData) {
             for (doctor of mr.doctorList) {
-                for (category of doctor.categories) {
+                if (doctor.categories && doctor.categories.length > 0) {
+                    for (category of doctor.categories) {
+                        const DetailedEntryReport = {
+                            DIV: mr.DIV,
+                            STATE: mr.state,
+                            MRCODE: mr.MRId,
+                            MRNAME: mr.MRname,
+                            HQ: mr.HQ,
+                            DESG: mr.DESG,
+                            DRNAME: doctor.doctorName,
+                            DRSPECIALITY: doctor.speciality,
+                            DRCITY: doctor.city,
+                            DRSTATE: doctor.state,
+                            DRscCODE: doctor.scCode,
+                            DRcategoryUse: category.categoryName || '',
+                            DRfilterUse: category.filterName || '',
+                        }
+                        reportEntries.push(DetailedEntryReport);
+                    }
+                } else {
                     const DetailedEntryReport = {
                         DIV: mr.DIV,
                         STATE: mr.state,
@@ -91,16 +110,16 @@ const getMrDoctor = async (req, res) => {
                         DRCITY: doctor.city,
                         DRSTATE: doctor.state,
                         DRscCODE: doctor.scCode,
-                        DRcategoryUse: category.categoryName,
-                        DRfilterUse: category.filterName
+                        DRcategoryUse: '',
+                        DRfilterUse: '',
                     }
                     reportEntries.push(DetailedEntryReport);
                 }
             }
         }
 
+        //Send the response after loop....
         res.status(201).json(reportEntries);
-
     } catch (err) {
         console.log(err);
         res.status(500).send({ message: "Failed to fetch MR data...!", success: false });
