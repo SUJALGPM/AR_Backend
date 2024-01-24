@@ -148,4 +148,38 @@ const getMRId = async (req, res) => {
     }
 }
 
-module.exports = { registerController, loginController, getMrDoctor, getMRId };
+//Get API for MR List TABLE...
+const mrList = async (req, res) => {
+    try {
+        const mrData = await mrModel.MR.find({});
+
+        if (!mrData) {
+            return res.status(404).send({ message: "MR List not found..!!", success: false });
+        }
+
+        //Empty entry array....
+        const entryMrDetail = [];
+
+        //Loop the data for format...
+        for (mr of mrData) {
+            const detailReport = {
+                MRId: mr.MRId,
+                MRname: mr.MRname,
+                MRdiv: mr.DIV,
+                MRemail: mr.email,
+                MRpassword: mr.password,
+                MRstate: mr.state,
+                MRdoj: mr.DOJ,
+                MRdesg: mr.DESG,
+                MRhq: mr.HQ,
+            }
+            entryMrDetail.push(detailReport);
+        }
+        res.status(201).json(entryMrDetail);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: "Failed to Fetched the MR list..!!!", success: false });
+    }
+}
+
+module.exports = { registerController, loginController, getMrDoctor, getMRId, mrList };
