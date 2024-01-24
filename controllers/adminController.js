@@ -108,8 +108,7 @@ const addCategory = async (req, res) => {
 const addFilters = async (req, res) => {
     try {
         // const categoryId = req.body.categoryId;
-        const { filterName, categoryId } = req.body;
-        const filterUrl = req.file.filename;
+        const { filterName, categoryId, filterUrl } = req.body;
 
         //Check Category Exist or not...
         const categoryTypeExist = await adminModel.CategoryType.findById(categoryId).populate('categoryType');

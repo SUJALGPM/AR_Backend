@@ -3,15 +3,15 @@ const router = express.Router();
 const multer = require('multer');
 const { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, } = require("../controllers/adminController");
 
-//Multer configuration....
-const storage = multer.diskStorage({
-    destination: "./uploads",
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        cb(null, `${Date.now()} - ${file.originalname}`);
-    },
-});
-const upload = multer({ storage });
+// //Multer configuration....
+// const storage = multer.diskStorage({
+//     destination: "./uploads",
+//     filename: function (req, file, cb) {
+//         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//         cb(null, `${Date.now()} - ${file.originalname}`);
+//     },
+// });
+// const upload = multer({ storage });
 
 //Register by admin...
 router.post("/register", registerController);
@@ -23,7 +23,7 @@ router.post("/login", loginController);
 router.post("/addCategory/:id", addCategory);
 
 //Add filters by admin...
-router.post("/addFilter", upload.single('filterUrl'), addFilters);
+router.post("/addFilter", addFilters);
 
 //Get the all category Type Name....
 router.get("/getCategory", getCategoryName);
