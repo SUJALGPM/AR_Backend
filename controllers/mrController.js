@@ -184,6 +184,19 @@ const mrList = async (req, res) => {
 //Edit MR Model POST APIs...
 const mrEdit = async (req, res) => {
     try {
+        const mrNewData = req.body;
+
+        if (!mrNewData) {
+            return res.status(201).send({ message: "MR Details not found....!!1", success: false });
+        }
+
+        const mrDataUpdate = await mrModel.MR.findByIdAndUpdate({ _id: mrNewData.id }, mrNewData, { new: true });
+
+        if (!mrDataUpdate) {
+            return res.status(201).send({ message: "MR Details Failed to Update...!!!", success: false });
+        } else {
+            return res.status(201).send({ message: "MR Details Update successfully...", success: true })
+        }
 
     } catch (err) {
         console.log(err);
