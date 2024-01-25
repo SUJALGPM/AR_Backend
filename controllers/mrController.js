@@ -190,7 +190,7 @@ const mrEdit = async (req, res) => {
             return res.status(201).send({ message: "MR Details not found....!!1", success: false });
         }
 
-        const mrDataUpdate = await mrModel.MR.findByIdAndUpdate({ _id: mrNewData.id }, mrNewData, { new: true });
+        const mrDataUpdate = await mrModel.MR.findOneAndUpdate({ MRId: mrNewData.MRId }, mrNewData, { new: true });
 
         if (!mrDataUpdate) {
             return res.status(201).send({ message: "MR Details Failed to Update...!!!", success: false });
