@@ -1,5 +1,4 @@
 const adminModel = require('../models/adminModel');
-const doctorModel = require('../models/doctorModel');
 const mrModel = require('../models/mrModel');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -182,4 +181,14 @@ const mrList = async (req, res) => {
     }
 }
 
-module.exports = { registerController, loginController, getMrDoctor, getMRId, mrList };
+//Edit MR Model POST APIs...
+const mrEdit = async (req, res) => {
+    try {
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: "Failed to update the MR Detail...", success: false });
+    }
+}
+
+module.exports = { registerController, loginController, getMrDoctor, getMRId, mrList, mrEdit };

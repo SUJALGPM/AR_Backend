@@ -30,7 +30,10 @@ const createDoctor = async (req, res) => {
 //Post api doctor usage of category & filters...
 const doctorUsageController = async (req, res) => {
     try {
-        const doctorID = req.params.id;
+
+        //const doctorID = req.params.id;
+        const doctorID = req.body.doctorID;
+
         const { categoryName, filterName } = req.body;
 
         const doctorExist = await mrModel.DoctorModel.findById(doctorID).populate({

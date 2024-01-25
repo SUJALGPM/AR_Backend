@@ -9,6 +9,6 @@ router.post("/createDoctor", createDoctor);
 router.get("/getAllDoctors", getAllDoctors);
 
 //Post api doctor usage of category & filters...
-router.post("/doctorUsage/:id", doctorUsageController);
+router.post("/doctorUsage", doctorUsageController);
 
 module.exports = router;
