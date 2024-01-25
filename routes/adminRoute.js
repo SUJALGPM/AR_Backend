@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, } = require("../controllers/adminController");
+const upload = multer();
+const { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, excelUpload, } = require("../controllers/adminController");
 
 // //Multer configuration....
 // const storage = multer.diskStorage({
@@ -36,6 +37,9 @@ router.get("/allCategory", allgetCategory);
 
 //Get all filters for listout....
 router.get("/filterList", allfilterList);
+
+// //Excel Sheet upload POST APIs...
+router.post('/upload/:id', upload.single('file'), excelUpload);
 
 module.exports = router;
 

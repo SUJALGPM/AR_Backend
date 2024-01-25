@@ -2,6 +2,7 @@ const adminModel = require('../models/adminModel');
 const bcrypt = require('bcrypt');
 const mrModel = require('../models/mrModel');
 const jwt = require("jsonwebtoken");
+const xlsx = require('xlsx');
 
 //Admin register controller....
 const registerController = async (req, res) => {
@@ -258,4 +259,67 @@ const allfilterList = async (req, res) => {
     }
 }
 
-module.exports = { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList };
+//Excel Sheet upload POST APIs...
+const excelUpload = async (req, res) => {
+    try {
+        const adminId = req.params.id;
+
+        // Parse Excel sheet data
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+
+        // Find the admin by ID
+        const admin = await adminModel.Admin.findById(adminId);
+
+        if (!admin) {
+            return res.status(404).json({ error: 'Admin not found' });
+        }
+
+        // Iterate through sheetData and update the MongoDB models
+        for (const data of sheetData) {
+            // Create MRUser
+            const mrUser = new mrModel.MR({
+                adminId: adminId,
+                MRId: data.MRId,
+                MRname: data.MRname,
+                DIV: data.DIV,
+                email: data.email,
+                password: data.password,
+                state: data.state,
+                DOJ: data.DOJ,
+                DESG: data.DESG,
+                HQ: data.HQ,
+
+            });
+
+            // Save MRUser
+            await mrUser.save();
+            // console.log(mrUser._id);
+
+            // Create Doctor
+            const doctor = new mrModel.DoctorModel({
+                doctorName: data.doctorName,
+                scCode: data.scCode,
+                city: data.city,
+                state: data.state,
+                locality: data.locality,
+                speciality: data.speciality,
+
+            });
+
+            // Save Doctor
+            await doctor.save();
+            const mrExist = await mrModel.MR.findById(mrUser._id).populate('doctorList');
+            console.log(mrExist);
+            mrExist.doctorList.push(doctor);
+            await mrExist.save();
+        }
+
+        res.json({ message: 'Data uploaded successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+module.exports = { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, excelUpload };
