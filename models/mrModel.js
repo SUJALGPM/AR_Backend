@@ -9,7 +9,7 @@ const CategorySchema = new mongoose.Schema({
         default: Date.now
     },
     categories: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctors' }
-});
+}, { timestamps: true });
 
 //Doctor Schema...
 const doctorSchema = new mongoose.Schema({

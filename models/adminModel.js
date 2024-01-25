@@ -4,7 +4,7 @@ const FilterSchema = new mongoose.Schema({
     filterName: String,
     filterUrl: String,
     categoryType: { type: mongoose.Schema.Types.ObjectId, ref: 'CategoryType' },
-});
+}, { timestamps: true });
 
 const CategoryTypeSchema = new mongoose.Schema({
     categoryName: String,
@@ -13,7 +13,7 @@ const CategoryTypeSchema = new mongoose.Schema({
         default: []
     },
     categories: { type: mongoose.Schema.Types.ObjectId, ref: 'categories' },
-});
+}, { timestamps: true });
 
 const adminSchema = mongoose.Schema({
     adminId: {
