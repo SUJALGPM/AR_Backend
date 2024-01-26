@@ -2,6 +2,7 @@ const adminModel = require('../models/adminModel');
 const bcrypt = require('bcrypt');
 const mrModel = require('../models/mrModel');
 const jwt = require("jsonwebtoken");
+var nodemailer = require('nodemailer');
 const xlsx = require('xlsx');
 
 //Admin register controller....
@@ -322,4 +323,56 @@ const excelUpload = async (req, res) => {
     }
 }
 
-module.exports = { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, excelUpload };
+//Forget Password APIs......
+const forgotPass = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const userExist = await adminModel.Admin.findOne({ email: email });
+
+        if (!userExist) {
+            return res.status(404).send({ message: "Admin Not found...!!!", success: false });
+        }
+
+        // Send the password directly via email
+        const password = userExist.password;
+
+        // NodeMailer Configuration
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'sujaldingankar900@gmail.com',
+                pass: 'mrbi mgfa xaiz ceoi'
+            }
+        });
+
+        // Email content
+        var mailOptions = {
+            from: 'sujaldingankar900@gmail.com',
+            to: 'Mailme.sujaldingankar@gmail.com',
+            subject: 'Password API correctly working take your Password...',
+            html: `
+                <p>Dear ${userExist.adminName},</p>
+                <p>Your password is: ${password}</p>
+                <p>Please keep this information secure.</p>
+                <p>If you didn't request this, please ignore this email.</p>
+            `
+        };
+
+        // Send the email
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                return res.status(500).send({ message: "Error sending email", success: false });
+            } else {
+                console.log('Email sent: ' + info.response);
+                return res.status(200).send({ message: "Password sent successfully", success: true });
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+module.exports = { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, excelUpload, forgotPass };

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const upload = multer();
-const { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, excelUpload, } = require("../controllers/adminController");
+const { loginController, registerController, addCategory, addFilters, getCategoryName, allFilter, allgetCategory, allfilterList, excelUpload, forgotPass, } = require("../controllers/adminController");
 
 // //Multer configuration....
 // const storage = multer.diskStorage({
@@ -13,6 +13,7 @@ const { loginController, registerController, addCategory, addFilters, getCategor
 //     },
 // });
 // const upload = multer({ storage });
+
 
 //Register by admin...
 router.post("/register", registerController);
@@ -38,8 +39,11 @@ router.get("/allCategory", allgetCategory);
 //Get all filters for listout....
 router.get("/filterList", allfilterList);
 
-// //Excel Sheet upload POST APIs...
+//Excel Sheet upload POST APIs...
 router.post('/upload/:id', upload.single('file'), excelUpload);
+
+//Forget Password Route POST APIs....
+router.post("/forgetPass", forgotPass);
 
 module.exports = router;
 
