@@ -1,5 +1,37 @@
 const mongoose = require('mongoose');
 
+//ARDoctor Track Usage model(Static doctor)......
+const staticDoctor = new mongoose.Schema({
+    doctorName: {
+        type: String,
+        default: ""
+    },
+    doctorCatName: {
+        type: String,
+        default: ""
+    },
+    doctorFilterName: {
+        type: String,
+        default: ""
+    },
+    doctorSpec: {
+        type: String,
+        default: ""
+    },
+    doctorCity: {
+        type: String,
+        default: ""
+    },
+    doctorState: {
+        type: String,
+        default: ""
+    },
+    doctorStatus: {
+        type: String,
+        default: ""
+    },
+}, { timestamps: true });
+
 //Doctor Usage track...
 const CategorySchema = new mongoose.Schema({
     categoryName: String,
@@ -11,10 +43,15 @@ const CategorySchema = new mongoose.Schema({
     categories: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctors' }
 }, { timestamps: true });
 
+
 //Doctor Schema...
 const doctorSchema = new mongoose.Schema({
     doctorName: String,
-    scCode: String,
+    scCode: {
+        type: String,
+        default: undefined,
+        index: false,
+    },
     city: String,
     state: String,
     locality: String,
@@ -83,5 +120,6 @@ const userSchema = new mongoose.Schema({
 const MR = mongoose.model('MRUser', userSchema);
 const DoctorModel = mongoose.model("Doctors", doctorSchema);
 const doctorUsage = mongoose.model("doctorUsage", CategorySchema);
+const staticUsage = mongoose.model('staticUsage', staticDoctor);
 
-module.exports = { MR, DoctorModel, doctorUsage };
+module.exports = { MR, DoctorModel, doctorUsage, staticUsage };
