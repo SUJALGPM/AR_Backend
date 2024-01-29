@@ -14,10 +14,7 @@ const CategorySchema = new mongoose.Schema({
 //Doctor Schema...
 const doctorSchema = new mongoose.Schema({
     doctorName: String,
-    scCode: {
-        type: String,
-        unique: true
-    },
+    scCode: String,
     city: String,
     state: String,
     locality: String,
