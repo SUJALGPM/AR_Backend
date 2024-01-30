@@ -30,6 +30,7 @@ const staticDoctor = new mongoose.Schema({
         type: String,
         default: ""
     },
+    staticDrList: { type: mongoose.Schema.Types.ObjectId, ref: 'MRUser' }
 }, { timestamps: true });
 
 //Doctor Usage track...
@@ -42,7 +43,6 @@ const CategorySchema = new mongoose.Schema({
     },
     categories: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctors' }
 }, { timestamps: true });
-
 
 //Doctor Schema...
 const doctorSchema = new mongoose.Schema({
@@ -66,7 +66,6 @@ const doctorSchema = new mongoose.Schema({
     },
     doctorList: { type: mongoose.Schema.Types.ObjectId, ref: 'MRUser' }
 }, { timestamps: true });
-
 
 //MR Schema....
 const userSchema = new mongoose.Schema({
@@ -115,6 +114,10 @@ const userSchema = new mongoose.Schema({
         type: [doctorSchema],
         default: []
     },
+    staticDrList: {
+        type: [staticDoctor],
+        default: []
+    }
 }, { timestamps: true });
 
 const MR = mongoose.model('MRUser', userSchema);

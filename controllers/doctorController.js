@@ -39,7 +39,6 @@ const createDoctor = async (req, res) => {
     }
 };
 
-
 //Get all doctor created by MR for table List....
 const getAllDoctors = async (req, res) => {
     try {
@@ -86,7 +85,6 @@ const getAllDoctors = async (req, res) => {
         console.log(err);
     }
 }
-
 
 //Post api doctor usage of category & filters...
 const doctorUsageController = async (req, res) => {
@@ -142,11 +140,16 @@ const doctorUsageController = async (req, res) => {
     }
 }
 
-
 //Post APIs for static doctor Usage...
 const doctorStaticUsage = async (req, res) => {
     try {
-        const { doctorName, doctorCatName, doctorFilterName, doctorSpec, doctorCity, doctorState, doctorStatus } = req.body;
+        const { mrID, doctorName, doctorCatName, doctorFilterName, doctorSpec, doctorCity, doctorState, doctorStatus } = req.body;
+
+        const mrExist = await mrModel.MR.findById(mrID).populate('staticDrList');
+
+        if (!mrExist) {
+            return res.status(404).send({ message: "MR not found..!!!", success: false });
+        }
 
         if (!doctorStatus) {
             return res.status(404).send({ message: "Failed to recieve status..!!!!", success: false });
@@ -167,13 +170,17 @@ const doctorStaticUsage = async (req, res) => {
             doctorSpec: doctorSpec || null,
             doctorCity: doctorCity || null,
             doctorState: doctorState || null,
-            doctorStatus: doctorStatus
+            doctorStatus: doctorStatus,
+            staticDrList: mrID
         };
 
         const trackUsage = new mrModel.staticUsage(usageData);
         const recordUsage = await trackUsage.save();
 
-        if (recordUsage) {
+        mrExist.staticDrList.push(recordUsage);
+        const mrModelListUpdate = await mrExist.save();
+
+        if (mrModelListUpdate) {
             return res.status(201).send({ message: "Static Doctor Usage track Successfully.....", success: true });
         }
 
@@ -184,31 +191,106 @@ const doctorStaticUsage = async (req, res) => {
     }
 }
 
+// //Get APIs for static Dr Table List(Detailed Report) Aggregate....
+// const listStaticUsage = async (req, res) => {
+//     try {
 
-//Get APIs for static Dr Table List....
+//         // //$addToSet operator also be used to get unique value from group document it can be used in replace of $push...
+//         const groupedDoctors = await mrModel.staticUsage.aggregate([
+//             {
+//                 $group: {
+//                     _id: "$mrId",
+//                     doctors: {
+//                         $push: {
+//                             mrID: "$mrId",
+//                             DRNAME: "$doctorName",
+//                             DRCATEGORYNAME: "$doctorCatName",
+//                             DRFILTERNAME: "$doctorFilterName",
+//                             DOCTORSPEC: { $ifNull: ["$doctorSpec", ""] },
+//                             DOCTORCITY: { $ifNull: ["$doctorCity", ""] },
+//                             DOCTORSTATE: { $ifNull: ["$doctorState", ""] },
+//                             DOCTORSTATUS: "$doctorStatus"
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $unwind: "$doctors" // Unwind the array to get separate objects
+//             },
+//             {
+//                 $replaceRoot: { newRoot: "$doctors" } // Replace the root with the doctors field
+//             },
+//             {
+//                 $project: {
+//                     _id: 0
+//                 }
+//             }
+//         ]);
+
+//         // Send the response with the grouped data
+//         res.status(201).json(groupedDoctors);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send({ message: "Failed to load the stored record..!!!", success: false });
+//     }
+// }
+
+//Get APIs for static Dr Table List(Detailed Report)....
 const listStaticUsage = async (req, res) => {
     try {
-        const fetchRecord = await mrModel.staticUsage.find({});
+        const mrData = await mrModel.MR.find({});
 
-        //Empty array of record...
-        const recordReport = [];
-
-        //Loop the data from staticRecord model...
-        for (data of fetchRecord) {
-            const trackData = {
-                DRNAME: data.doctorName,
-                DRCATEGORYNAME: data.doctorCatName,
-                DRFILTERNAME: data.doctorFilterName,
-                DOCTORSPEC: data.doctorSpec || '',
-                DOCTORCITY: data.doctorCity || '',
-                DOCTORSTATE: data.doctorState || '',
-                DOCTORSTATUS: data.doctorStatus
-            }
-            recordReport.push(trackData);
+        if (!mrData) {
+            return res.status(404).send({ message: "Failed to load the mrData..!!!", success: false });
         }
 
-        //Send the reponse for table with empty fields....
-        res.status(201).json(recordReport);
+        //Empty array to store the loop data...
+        const staticDrList = [];
+
+        //Loop the mrData...
+        for (mr of mrData) {
+            if (mr.staticDrList && mr.staticDrList.length > 0) {
+                for (doctor of mr.staticDrList) {
+                    const drReport = {
+                        DIV: mr.DIV,
+                        STATE: mr.state,
+                        MRCODE: mr.MRId,
+                        MRNAME: mr.MRname,
+                        HQ: mr.HQ,
+                        DESG: mr.DESG,
+                        DRNAME: doctor.doctorName,
+                        DRSPECIALITY: doctor.doctorSpec,
+                        DRCITY: doctor.doctorCity || '',
+                        DRSTATE: doctor.doctorState || '',
+                        DRstatus: doctor.doctorStatus || '',
+                        DRcategoryUse: doctor.doctorCatName || '',
+                        DRfilterUse: doctor.doctorFilterName || '',
+                    }
+                    staticDrList.push(drReport);
+                }
+            } else {
+                const drReport = {
+                    DIV: mr.DIV,
+                    STATE: mr.state,
+                    MRCODE: mr.MRId,
+                    MRNAME: mr.MRname,
+                    HQ: mr.HQ,
+                    DESG: mr.DESG,
+                    DRNAME: doctor.doctorName,
+                    DRSPECIALITY: '',
+                    DRCITY: '',
+                    DRSTATE: '',
+                    DRstatus: '',
+                    DRcategoryUse: '',
+                    DRfilterUse: '',
+                }
+                staticDrList.push(drReport);
+            }
+        }
+
+        //Response data in pure objects...
+        res.status(201).json(staticDrList);
+
     } catch (err) {
         console.log(err);
         res.status(500).send({ message: "Failed to load the stored record..!!!", success: false });
